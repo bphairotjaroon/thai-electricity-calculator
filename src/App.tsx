@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import {
   BarChart3,
   Calculator,
@@ -13,8 +13,9 @@ import {
   Zap,
 } from "lucide-react";
 import "./App.css";
+import DashboardPage from "./pages/DashboardPage";
 
-type Page = "calculator" | "bill" | "analysis" | "rates";
+type Page = "dashboard" | "calculator" | "bill" | "analysis" | "rates";
 
 type ApplianceCategory =
   | "air-conditioner"
@@ -56,10 +57,10 @@ type StatusTone = "neutral" | "danger" | "warning" | "success";
 // Fix legacy UTF-8/Latin-1 mojibake that can appear when the dev server/browser
 // serves a previously mis-decoded bundle. Correct Thai text is left unchanged.
 const repairMojibake = (value: string): string => {
-  if (!/[àÂÃÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßâð]/.test(value)) return value;
+  if (!/[���������������������]/.test(value)) return value;
   try {
     const repaired = decodeURIComponent(escape(value));
-    return repaired.includes("�") ? value : repaired;
+    return repaired.includes("?") ? value : repaired;
   } catch {
     return value;
   }
@@ -92,9 +93,9 @@ const makeAppliance = (
 const initialAppliances: Appliance[] = [
   makeAppliance({
     id: 1,
-    name: "เครื่องปรับอากาศห้องนอน",
+    name: "???????????????????????",
     category: "air-conditioner",
-    icon: "❄️",
+    icon: "??",
     capacity: "12,000 BTU",
     watts: 1200,
     hoursPerDay: 8,
@@ -104,20 +105,20 @@ const initialAppliances: Appliance[] = [
   }),
   makeAppliance({
     id: 2,
-    name: "ตู้เย็น",
+    name: "???????",
     category: "refrigerator",
-    icon: "🧊",
-    capacity: "ประมาณ 10 คิว",
+    icon: "??",
+    capacity: "?????? 10 ???",
     watts: 150,
     hoursPerDay: 24,
     daysPerMonth: 30,
   }),
   makeAppliance({
     id: 3,
-    name: "โทรทัศน์",
+    name: "????????",
     category: "television",
-    icon: "📺",
-    capacity: "55 นิ้ว",
+    icon: "??",
+    capacity: "55 ????",
     watts: 120,
     hoursPerDay: 5,
     daysPerMonth: 30,
@@ -125,46 +126,46 @@ const initialAppliances: Appliance[] = [
 ];
 
 const appliancePresets = [
-  { name: "เครื่องปรับอากาศ", category: "air-conditioner" as const, icon: "❄️", watts: 1200, capacity: "12,000 BTU", btu: 12000 },
-  { name: "ตู้เย็น", category: "refrigerator" as const, icon: "🧊", watts: 150, capacity: "ประมาณ 10 คิว" },
-  { name: "โทรทัศน์", category: "television" as const, icon: "📺", watts: 120, capacity: "55 นิ้ว" },
-  { name: "เครื่องซักผ้า", category: "washing-machine" as const, icon: "🧺", watts: 500, capacity: "" },
-  { name: "ไมโครเวฟ", category: "microwave" as const, icon: "🍲", watts: 1000, capacity: "" },
-  { name: "คอมพิวเตอร์", category: "computer" as const, icon: "💻", watts: 300, capacity: "" },
-  { name: "หลอดไฟ", category: "lighting" as const, icon: "💡", watts: 15, capacity: "" },
+  { name: "????????????????", category: "air-conditioner" as const, icon: "??", watts: 1200, capacity: "12,000 BTU", btu: 12000 },
+  { name: "???????", category: "refrigerator" as const, icon: "??", watts: 150, capacity: "?????? 10 ???" },
+  { name: "????????", category: "television" as const, icon: "??", watts: 120, capacity: "55 ????" },
+  { name: "?????????????", category: "washing-machine" as const, icon: "??", watts: 500, capacity: "" },
+  { name: "????????", category: "microwave" as const, icon: "??", watts: 1000, capacity: "" },
+  { name: "???????????", category: "computer" as const, icon: "??", watts: 300, capacity: "" },
+  { name: "??????", category: "lighting" as const, icon: "??", watts: 15, capacity: "" },
 ];
 
 const getWarrantyStatus = (dateString: string): { label: string; tone: StatusTone } => {
-  if (!dateString) return { label: "ยังไม่ระบุวันหมดประกัน", tone: "neutral" };
+  if (!dateString) return { label: "??????????????????????", tone: "neutral" };
   const expiryDate = new Date(`${dateString}T23:59:59`);
-  if (Number.isNaN(expiryDate.getTime())) return { label: "วันที่ไม่ถูกต้อง", tone: "danger" };
+  if (Number.isNaN(expiryDate.getTime())) return { label: "????????????????", tone: "danger" };
 
   const diffInDays = Math.ceil((expiryDate.getTime() - Date.now()) / 86400000);
-  if (diffInDays < 0) return { label: "หมดประกันแล้ว", tone: "danger" };
-  if (diffInDays <= 30) return { label: "ใกล้หมดประกัน", tone: "warning" };
-  return { label: "อยู่ในระยะประกัน", tone: "success" };
+  if (diffInDays < 0) return { label: "?????????????", tone: "danger" };
+  if (diffInDays <= 30) return { label: "?????????????", tone: "warning" };
+  return { label: "????????????????", tone: "success" };
 };
 
 const getMaintenanceStatus = (dateString: string): { label: string; tone: StatusTone } => {
-  if (!dateString) return { label: "ยังไม่กำหนดวันบำรุงรักษา", tone: "neutral" };
+  if (!dateString) return { label: "????????????????????????", tone: "neutral" };
   const serviceDate = new Date(`${dateString}T23:59:59`);
-  if (Number.isNaN(serviceDate.getTime())) return { label: "วันที่ไม่ถูกต้อง", tone: "danger" };
+  if (Number.isNaN(serviceDate.getTime())) return { label: "????????????????", tone: "danger" };
 
   const diffInDays = Math.ceil((serviceDate.getTime() - Date.now()) / 86400000);
-  if (diffInDays < 0) return { label: "เกินกำหนด", tone: "danger" };
-  if (diffInDays <= 30) return { label: "ใกล้ถึงกำหนด", tone: "warning" };
-  return { label: "ยังไม่ถึงกำหนด", tone: "success" };
+  if (diffInDays < 0) return { label: "?????????", tone: "danger" };
+  if (diffInDays <= 30) return { label: "????????????", tone: "warning" };
+  return { label: "??????????????", tone: "success" };
 };
 
 const categoryLabel: Record<ApplianceCategory, string> = {
-  "air-conditioner": "เครื่องปรับอากาศ",
-  refrigerator: "ตู้เย็น",
-  television: "โทรทัศน์",
-  "washing-machine": "เครื่องซักผ้า",
-  microwave: "ไมโครเวฟ",
-  computer: "คอมพิวเตอร์",
-  lighting: "หลอดไฟ",
-  other: "อื่น ๆ",
+  "air-conditioner": "????????????????",
+  refrigerator: "???????",
+  television: "????????",
+  "washing-machine": "?????????????",
+  microwave: "????????",
+  computer: "???????????",
+  lighting: "??????",
+  other: "???? ?",
 };
 
 type TariffResult = {
@@ -242,7 +243,7 @@ function App() {
     return () => observer.disconnect();
   }, []);
 
-  const [activePage, setActivePage] = useState<Page>("calculator");
+  const [activePage, setActivePage] = useState<Page>("dashboard");
   const [appliances, setAppliances] = useState<Appliance[]>(initialAppliances);
   const [selectedApplianceId, setSelectedApplianceId] = useState<number | null>(null);
 
@@ -347,64 +348,98 @@ function App() {
         .join(", ")
     : "#dfe7e5 0% 100%";
 
+  const dashboardRows = calculations.rows.map((item) => ({
+    id: item.id,
+    name: item.name,
+    icon: item.icon,
+    kwh: item.kwh,
+    cost:
+      calculations.totalKwh > 0
+        ? (item.kwh / calculations.totalKwh) * calculations.totalBill
+        : 0,
+  }));
+
+  const dashboardCalculations = {
+    totalKwh: calculations.totalKwh,
+    energyCharge: calculations.energyCharge,
+    ftCharge: calculations.ftCharge,
+    serviceCharge: calculations.serviceCharge,
+    vat: calculations.vat,
+    totalBill: calculations.totalBill,
+    tariffType: calculations.tariffType,
+  };
+
   return (
     <div className="app">
       <header className="topbar">
         <div className="brand">
           <div className="brand-icon"><Zap size={25} fill="currentColor" /></div>
           <div>
-            <h1>คำนวณค่าไฟฟ้า</h1>
+            <h1>?????????????</h1>
             <p>Smart Energy Dashboard</p>
           </div>
         </div>
 
         <nav className="top-nav">
+          <button className={activePage === "dashboard" ? "nav-button active" : "nav-button"} onClick={() => setActivePage("dashboard")}>
+            <BarChart3 size={17} /> Dashboard
+          </button>
           <button className={activePage === "calculator" ? "nav-button active" : "nav-button"} onClick={() => setActivePage("calculator")}>
-            <Calculator size={17} /> คำนวณเครื่องใช้ไฟฟ้า
+            <Calculator size={17} /> ????????????????????
           </button>
           <button className={activePage === "bill" ? "nav-button active" : "nav-button"} onClick={() => setActivePage("bill")}>
-            <CircleDollarSign size={17} /> คำนวณบิลค่าไฟ <span className="nav-unit-badge">{calculations.totalKwh.toFixed(0)} u.</span>
+            <CircleDollarSign size={17} /> ????????????? <span className="nav-unit-badge">{calculations.totalKwh.toFixed(0)} u.</span>
           </button>
           <button className={activePage === "analysis" ? "nav-button active" : "nav-button"} onClick={() => setActivePage("analysis")}>
-            <BarChart3 size={17} /> เปรียบเทียบการใช้ไฟ
+            <BarChart3 size={17} /> ???????????????????
           </button>
           <button className={activePage === "rates" ? "nav-button active" : "nav-button"} onClick={() => setActivePage("rates")}>
-            <Lightbulb size={17} /> เคล็ดลับ/อัตราค่าไฟ
+            <Lightbulb size={17} /> ????????/??????????
           </button>
         </nav>
       </header>
 
       <main className="content">
+        {activePage === "dashboard" ? (
+          <DashboardPage
+            calculations={dashboardCalculations}
+            rows={dashboardRows}
+            appliances={appliances}
+            onOpenCalculator={() => setActivePage("calculator")}
+            onOpenAnalysis={() => setActivePage("analysis")}
+          />
+        ) : (
+          <>
         <section className="page-heading">
           <div>
             <h2>
-              {activePage === "calculator" ? "คำนวณค่าไฟฟ้า" : activePage === "bill" ? "คำนวณบิลค่าไฟ" : activePage === "analysis" ? "เปรียบเทียบการใช้ไฟ" : "เคล็ดลับและอัตราค่าไฟฟ้า"}
+              {activePage === "calculator" ? "?????????????" : activePage === "bill" ? "?????????????" : activePage === "analysis" ? "???????????????????" : "????????????????????????"}
             </h2>
             <p>
               {activePage === "calculator"
-                ? "เพิ่มเครื่องใช้ไฟฟ้าและดูค่าไฟโดยประมาณแบบเรียลไทม์"
+                ? "???????????????????????????????????????????????????"
                 : activePage === "bill"
-                  ? "ใช้หน่วยจากรายการเครื่องใช้ไฟฟ้าเพื่อคำนวณบิลโดยอัตโนมัติ"
+                  ? "?????????????????????????????????????????????????????????"
                   : activePage === "analysis"
-                    ? "ดูสัดส่วนและจัดอันดับเครื่องใช้ไฟฟ้าที่ใช้พลังงานมากที่สุด"
-                    : "ดูคำแนะนำประหยัดพลังงานและกำหนดอัตราสำหรับการคำนวณ"}
+                    ? "??????????????????????????????????????????????????????????"
+                    : "??????????????????????????????????????????????????"}
             </p>
           </div>
-          <button className="reset-button" onClick={resetAll}><RefreshCw size={16} /> รีเซ็ต</button>
+          <button className="reset-button" onClick={resetAll}><RefreshCw size={16} /> ??????</button>
         </section>
 
         <section className="summary-grid">
           <div className="summary-card energy-summary">
             <div className="summary-icon blue"><Zap size={21} /></div>
-            <div><span>พลังงานรวม</span><strong>{calculations.totalKwh.toFixed(1)} kWh</strong><small>ต่อเดือน</small></div>
+            <div><span>??????????</span><strong>{calculations.totalKwh.toFixed(1)} kWh</strong><small>????????</small></div>
           </div>
           <div className="summary-card">
             <div className="summary-icon green"><CircleDollarSign size={21} /></div>
-            <div><span>ค่าไฟประมาณ</span><strong>฿{money(calculations.totalBill)}</strong><small>รวม VAT {vatRate}%</small></div>
+            <div><span>???????????</span><strong>?{money(calculations.totalBill)}</strong><small>??? VAT {vatRate}%</small></div>
           </div>
           <div className="summary-card action-card">
             <div className="summary-icon orange"><Calculator size={21} /></div>
-            <div><span>คำนวณอัตราใหม่</span><strong>ปรับค่าการคำนวณ</strong><button onClick={() => setActivePage("rates")}>ตั้งค่าอัตราค่าไฟ</button></div>
+            <div><span>??????????????</span><strong>???????????????</strong><button onClick={() => setActivePage("rates")}>?????????????????</button></div>
           </div>
         </section>
 
@@ -413,8 +448,8 @@ function App() {
             <section className="dashboard-grid">
               <div className="panel appliance-panel">
                 <div className="panel-header">
-                  <div><h3>รายการเครื่องใช้ไฟฟ้า</h3><p>{calculations.rows.length} รายการ · คลิกปุ่มรายละเอียดเพื่อแก้ข้อมูลเครื่อง</p></div>
-                  <button className="add-button" onClick={() => addAppliance()}><Plus size={17} /> เพิ่มเครื่องใช้ไฟฟ้า</button>
+                  <div><h3>?????????????????????</h3><p>{calculations.rows.length} ?????? � ???????????????????????????????????????</p></div>
+                  <button className="add-button" onClick={() => addAppliance()}><Plus size={17} /> ????????????????????</button>
                 </div>
 
                 <div className="preset-row">
@@ -424,7 +459,7 @@ function App() {
                 </div>
 
                 <div className="table-head">
-                  <span>เครื่องใช้ไฟฟ้า</span><span>กำลังไฟ (W)</span><span>ชม./วัน</span><span>วัน/เดือน</span><span>จำนวน</span><span>kWh/เดือน</span><span></span>
+                  <span>???????????????</span><span>??????? (W)</span><span>??./???</span><span>???/?????</span><span>?????</span><span>kWh/?????</span><span></span>
                 </div>
 
                 <div className="appliance-list">
@@ -440,8 +475,8 @@ function App() {
                       <input type="number" min="1" value={item.quantity} onChange={(e) => updateAppliance(item.id, "quantity", Math.max(1, Number(e.target.value)))} />
                       <strong className="kwh-value">{item.kwh.toFixed(1)}</strong>
                       <div className="row-actions">
-                        <button className="detail-button" onClick={() => setSelectedApplianceId(item.id)} title="รายละเอียด"><Info size={16} /></button>
-                        <button className="delete-button" onClick={() => removeAppliance(item.id)} title="ลบรายการ"><Trash2 size={17} /></button>
+                        <button className="detail-button" onClick={() => setSelectedApplianceId(item.id)} title="??????????"><Info size={16} /></button>
+                        <button className="delete-button" onClick={() => removeAppliance(item.id)} title="????????"><Trash2 size={17} /></button>
                       </div>
                     </div>
                   ))}
@@ -449,7 +484,7 @@ function App() {
               </div>
 
               <div className="panel chart-panel">
-                <div className="panel-header"><div><h3>สัดส่วนการกินไฟ</h3><p>แสดงตามพลังงานที่ใช้ต่อเดือน</p></div></div>
+                <div className="panel-header"><div><h3>???????????????</h3><p>????????????????????????????</p></div></div>
                 <div className="donut-area"><div className="donut" style={{ background: `conic-gradient(${donutGradient})` }}><div className="donut-center"><strong>{calculations.totalKwh.toFixed(1)}</strong><span>kWh</span></div></div></div>
                 <div className="legend-list">
                   {topAppliances.map((item, index) => (
@@ -463,19 +498,19 @@ function App() {
             </section>
 
             <section className="insight-grid">
-              <div className="insight-card saving-card"><div className="insight-icon"><Leaf size={20} /></div><div><strong>เคล็ดลับประหยัดพลังงาน</strong><p>{topAppliances[0] ? `${topAppliances[0].name} เป็นรายการที่ใช้ไฟสูงสุด ${topAppliances[0].kwh.toFixed(1)} kWh/เดือน ลองลดชั่วโมงใช้งานเพื่อประหยัดค่าไฟ` : "เพิ่มเครื่องใช้ไฟฟ้าเพื่อรับคำแนะนำ"}</p></div></div>
-              <div className="insight-card formula-card"><div className="insight-icon"><Info size={20} /></div><div><strong>สูตรคำนวณการใช้ไฟ</strong><p>(กำลังไฟ W × ชั่วโมงใช้งาน × วันใช้งาน × จำนวนเครื่อง) ÷ 1,000 = kWh/เดือน</p></div></div>
+              <div className="insight-card saving-card"><div className="insight-icon"><Leaf size={20} /></div><div><strong>??????????????????????</strong><p>{topAppliances[0] ? `${topAppliances[0].name} ???????????????????????? ${topAppliances[0].kwh.toFixed(1)} kWh/????? ???????????????????????????????????` : "???????????????????????????????????"}</p></div></div>
+              <div className="insight-card formula-card"><div className="insight-icon"><Info size={20} /></div><div><strong>?????????????????</strong><p>(??????? W � ????????????? � ????????? � ????????????) � 1,000 = kWh/?????</p></div></div>
             </section>
 
             <section className="cost-panel panel">
-              <div className="panel-header"><div><h3>สรุปค่าไฟ</h3><p>ประมาณการค่าไฟฟ้ารายเดือน</p></div></div>
+              <div className="panel-header"><div><h3>?????????</h3><p>?????????????????????????</p></div></div>
               <div className="cost-grid">
-                <div><span>ค่าพลังงาน</span><strong>฿{money(calculations.energyCharge)}</strong></div>
-                <div><span>ค่า Ft</span><strong>฿{money(calculations.ftCharge)}</strong></div>
-                <div><span>ค่าบริการ</span><strong>฿{money(calculations.serviceCharge)}</strong></div>
-                <div><span>ประเภทอัตรา</span><strong>{calculations.tariffType}</strong></div>
-                <div><span>VAT {vatRate}%</span><strong>฿{money(calculations.vat)}</strong></div>
-                <div className="total-cost"><span>ค่าไฟโดยประมาณ</span><strong>฿{money(calculations.totalBill)}</strong></div>
+                <div><span>??????????</span><strong>?{money(calculations.energyCharge)}</strong></div>
+                <div><span>??? Ft</span><strong>?{money(calculations.ftCharge)}</strong></div>
+                <div><span>?????????</span><strong>?{money(calculations.serviceCharge)}</strong></div>
+                <div><span>???????????</span><strong>{calculations.tariffType}</strong></div>
+                <div><span>VAT {vatRate}%</span><strong>?{money(calculations.vat)}</strong></div>
+                <div className="total-cost"><span>??????????????</span><strong>?{money(calculations.totalBill)}</strong></div>
               </div>
             </section>
           </>
@@ -483,18 +518,18 @@ function App() {
 
         {activePage === "bill" && (
           <section className="panel bill-panel">
-            <div className="panel-header"><div><h3>คำนวณบิลค่าไฟ</h3><p>ประมาณการจากจำนวนหน่วยและอัตราที่กำหนดในแอป</p></div><span className="bill-badge">ประมาณการ</span></div>
+            <div className="panel-header"><div><h3>?????????????</h3><p>???????????????????????????????????????????</p></div><span className="bill-badge">?????????</span></div>
             <div className="bill-content">
-              <label className="bill-input-card"><span>จำนวนหน่วยไฟฟ้า (kWh)</span><input type="number" min="0" step="0.1" value={calculations.totalKwh.toFixed(1)} readOnly /><small>ดึงอัตโนมัติจากรายการเครื่องใช้ไฟฟ้า และจะเปลี่ยนทันทีเมื่อแก้กำลังไฟ/ชั่วโมง/วัน/จำนวน</small></label>
-              <div className="bill-result-card"><span>ค่าไฟโดยประมาณ</span><strong>฿{money(estimatedBill)}</strong><div className="bill-breakdown"><div><span>ค่าพลังงาน</span><b>฿{money(billEnergyCharge)}</b></div><div><span>ค่า Ft</span><b>฿{money(billFtCharge)}</b></div><div><span>ค่าบริการ</span><b>฿{money(billServiceCharge)}</b></div><div><span>VAT {vatRate}%</span><b>฿{money(billVat)}</b></div></div></div>
+              <label className="bill-input-card"><span>??????????????? (kWh)</span><input type="number" min="0" step="0.1" value={calculations.totalKwh.toFixed(1)} readOnly /><small>???????????????????????????????????? ????????????????????????????????/???????/???/?????</small></label>
+              <div className="bill-result-card"><span>??????????????</span><strong>?{money(estimatedBill)}</strong><div className="bill-breakdown"><div><span>??????????</span><b>?{money(billEnergyCharge)}</b></div><div><span>??? Ft</span><b>?{money(billFtCharge)}</b></div><div><span>?????????</span><b>?{money(billServiceCharge)}</b></div><div><span>VAT {vatRate}%</span><b>?{money(billVat)}</b></div></div></div>
             </div>
-            <div className="bill-note"><Info size={18} /><span>จำนวนหน่วยและยอดบิลในหน้านี้ใช้ชุดคำนวณเดียวกับหน้าเครื่องใช้ไฟฟ้า อัตราไม่ใช่ใบแจ้งค่าไฟจริง และสามารถแก้ไข Ft/VAT ได้จากหน้าอัตราค่าไฟ</span></div>
+            <div className="bill-note"><Info size={18} /><span>?????????????????????????????????????????????????????????????????? ?????????????????????????? ?????????????? Ft/VAT ????????????????????</span></div>
           </section>
         )}
 
         {activePage === "analysis" && (
           <section className="panel analysis-panel">
-            <div className="panel-header"><div><h3>วิเคราะห์การใช้ไฟ</h3><p>เรียงจากเครื่องใช้ไฟฟ้าที่ใช้พลังงานมากที่สุด</p></div></div>
+            <div className="panel-header"><div><h3>?????????????????</h3><p>?????????????????????????????????????????????</p></div></div>
             <div className="analysis-list">
               {topAppliances.map((item, index) => (
                 <div className="analysis-item" key={item.id}>
@@ -509,22 +544,22 @@ function App() {
 
         {activePage === "rates" && (
           <section className="panel rates-panel">
-            <div className="panel-header"><div><h3>อัตราค่าไฟ</h3><p>แก้ไขค่าใช้สำหรับการคำนวณ</p></div></div>
+            <div className="panel-header"><div><h3>??????????</h3><p>?????????????????????????</p></div></div>
             <div className="rates-grid">
               <div className="rate-info-card">
-                <span>การไฟฟ้า</span>
+                <span>????????</span>
                 <strong>PEA</strong>
-                <small>การไฟฟ้าส่วนภูมิภาค</small>
+                <small>???????????????????</small>
               </div>
               <div className="rate-info-card">
-                <span>ประเภทอัตรา</span>
-                <strong>บ้านอยู่อาศัย 1.1</strong>
-                <small>เลือก 1.1.1 หรือ 1.1.2 อัตโนมัติตามหน่วย</small>
+                <span>???????????</span>
+                <strong>????????????? 1.1</strong>
+                <small>????? 1.1.1 ???? 1.1.2 ?????????????????</small>
               </div>
               <label>
-                <span>ค่า Ft (บาท/kWh)</span>
+                <span>??? Ft (???/kWh)</span>
                 <input type="number" min="0" step="0.0001" value={ftRate} onChange={(e) => setFtRate(Math.max(0, Number(e.target.value)))} />
-                <small>ก.ย. – ธ.ค. 2569</small>
+                <small>?.?. � ?.?. 2569</small>
               </label>
               <label>
                 <span>VAT (%)</span>
@@ -533,68 +568,70 @@ function App() {
             </div>
 
             <div className="tariff-table">
-              <h4>อัตราค่าไฟบ้านอยู่อาศัย PEA 2569</h4>
+              <h4>??????????????????????? PEA 2569</h4>
               <div className="tariff-row tariff-head">
-                <span>ช่วงหน่วย</span>
-                <span>ประเภท 1.1.1</span>
-                <span>ประเภท 1.1.2</span>
+                <span>?????????</span>
+                <span>?????? 1.1.1</span>
+                <span>?????? 1.1.2</span>
               </div>
-              <div className="tariff-row"><span>1–15 หน่วย</span><span>2.3488</span><span>3.0000</span></div>
-              <div className="tariff-row"><span>16–25 หน่วย</span><span>2.9882</span><span>3.0000</span></div>
-              <div className="tariff-row"><span>26–200 หน่วย</span><span>3.0000</span><span>3.0000</span></div>
-              <div className="tariff-row"><span>201–400 หน่วย</span><span>4.1584</span><span>4.1584</span></div>
-              <div className="tariff-row"><span>401 หน่วยขึ้นไป</span><span>4.3583</span><span>4.3583</span></div>
+              <div className="tariff-row"><span>1�15 ?????</span><span>2.3488</span><span>3.0000</span></div>
+              <div className="tariff-row"><span>16�25 ?????</span><span>2.9882</span><span>3.0000</span></div>
+              <div className="tariff-row"><span>26�200 ?????</span><span>3.0000</span><span>3.0000</span></div>
+              <div className="tariff-row"><span>201�400 ?????</span><span>4.1584</span><span>4.1584</span></div>
+              <div className="tariff-row"><span>401 ???????????</span><span>4.3583</span><span>4.3583</span></div>
             </div>
 
-            <div className="rate-note"><Lightbulb size={19} /><div><strong>หมายเหตุ</strong><p>ค่าไฟฐานคำนวณแบบขั้นบันไดตามประเภทบ้านอยู่อาศัยของ PEA ส่วน Ft และ VAT แยกคำนวณต่างหาก</p></div></div>
+            <div className="rate-note"><Lightbulb size={19} /><div><strong>????????</strong><p>?????????????????????????????????????????????????? PEA ???? Ft ??? VAT ???????????????</p></div></div>
           </section>
+        )}
+          </>
         )}
       </main>
 
-      <footer><span>⚡ Smart Energy Dashboard · MEA & PEA 2569</span><span>คำนวณค่าไฟฟ้าอย่างง่ายและรวดเร็ว</span></footer>
+      <footer><span>? Smart Energy Dashboard � MEA & PEA 2569</span><span>????????????????????????????????</span></footer>
 
       {selectedAppliance && (
         <div className="modal-backdrop" onMouseDown={() => setSelectedApplianceId(null)}>
           <div className="appliance-modal" onMouseDown={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <div><h3>{selectedAppliance.icon} รายละเอียดเครื่องใช้ไฟฟ้า</h3><p>{selectedAppliance.name}</p></div>
-              <button className="modal-close" onClick={() => setSelectedApplianceId(null)} title="ปิด"><X size={19} /></button>
+              <div><h3>{selectedAppliance.icon} ?????????????????????????</h3><p>{selectedAppliance.name}</p></div>
+              <button className="modal-close" onClick={() => setSelectedApplianceId(null)} title="???"><X size={19} /></button>
             </div>
 
             <div className="modal-grid">
-              <label><span>ชื่อเครื่อง</span><input value={selectedAppliance.name} onChange={(e) => updateAppliance(selectedAppliance.id, "name", e.target.value)} /></label>
-              <label><span>ประเภท</span><select value={selectedAppliance.category} onChange={(e) => updateAppliance(selectedAppliance.id, "category", e.target.value as ApplianceCategory)}>{Object.entries(categoryLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-              <label><span>ยี่ห้อ</span><input value={selectedAppliance.brand} onChange={(e) => updateAppliance(selectedAppliance.id, "brand", e.target.value)} /></label>
-              <label><span>รุ่น</span><input value={selectedAppliance.model} onChange={(e) => updateAppliance(selectedAppliance.id, "model", e.target.value)} /></label>
-              <label><span>ขนาด/ความจุ</span><input value={selectedAppliance.capacity} onChange={(e) => updateAppliance(selectedAppliance.id, "capacity", e.target.value)} /></label>
-              <label><span>กำลังไฟ (W)</span><input type="number" min="0" value={selectedAppliance.watts} onChange={(e) => updateAppliance(selectedAppliance.id, "watts", Math.max(0, Number(e.target.value)))} /></label>
-              <label><span>จำนวนเครื่อง</span><input type="number" min="1" value={selectedAppliance.quantity} onChange={(e) => updateAppliance(selectedAppliance.id, "quantity", Math.max(1, Number(e.target.value)))} /></label>
-              <label><span>ชั่วโมงใช้งาน/วัน</span><input type="number" min="0" max="24" step="0.5" value={selectedAppliance.hoursPerDay} onChange={(e) => updateAppliance(selectedAppliance.id, "hoursPerDay", Math.max(0, Math.min(24, Number(e.target.value))))} /></label>
-              <label><span>วันใช้งาน/เดือน</span><input type="number" min="0" max="31" value={selectedAppliance.daysPerMonth} onChange={(e) => updateAppliance(selectedAppliance.id, "daysPerMonth", Math.max(0, Math.min(31, Number(e.target.value))))} /></label>
+              <label><span>???????????</span><input value={selectedAppliance.name} onChange={(e) => updateAppliance(selectedAppliance.id, "name", e.target.value)} /></label>
+              <label><span>??????</span><select value={selectedAppliance.category} onChange={(e) => updateAppliance(selectedAppliance.id, "category", e.target.value as ApplianceCategory)}>{Object.entries(categoryLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+              <label><span>??????</span><input value={selectedAppliance.brand} onChange={(e) => updateAppliance(selectedAppliance.id, "brand", e.target.value)} /></label>
+              <label><span>????</span><input value={selectedAppliance.model} onChange={(e) => updateAppliance(selectedAppliance.id, "model", e.target.value)} /></label>
+              <label><span>????/??????</span><input value={selectedAppliance.capacity} onChange={(e) => updateAppliance(selectedAppliance.id, "capacity", e.target.value)} /></label>
+              <label><span>??????? (W)</span><input type="number" min="0" value={selectedAppliance.watts} onChange={(e) => updateAppliance(selectedAppliance.id, "watts", Math.max(0, Number(e.target.value)))} /></label>
+              <label><span>????????????</span><input type="number" min="1" value={selectedAppliance.quantity} onChange={(e) => updateAppliance(selectedAppliance.id, "quantity", Math.max(1, Number(e.target.value)))} /></label>
+              <label><span>?????????????/???</span><input type="number" min="0" max="24" step="0.5" value={selectedAppliance.hoursPerDay} onChange={(e) => updateAppliance(selectedAppliance.id, "hoursPerDay", Math.max(0, Math.min(24, Number(e.target.value))))} /></label>
+              <label><span>?????????/?????</span><input type="number" min="0" max="31" value={selectedAppliance.daysPerMonth} onChange={(e) => updateAppliance(selectedAppliance.id, "daysPerMonth", Math.max(0, Math.min(31, Number(e.target.value))))} /></label>
 
               {selectedAppliance.category === "air-conditioner" && (
                 <>
-                  <label><span>ชนิดแอร์</span><select value={selectedAppliance.airConditionerType ?? "other"} onChange={(e) => updateAppliance(selectedAppliance.id, "airConditionerType", e.target.value as AirConditionerType)}><option value="inverter">Inverter</option><option value="fixed-speed">Fixed Speed</option><option value="other">อื่น ๆ</option></select></label>
+                  <label><span>????????</span><select value={selectedAppliance.airConditionerType ?? "other"} onChange={(e) => updateAppliance(selectedAppliance.id, "airConditionerType", e.target.value as AirConditionerType)}><option value="inverter">Inverter</option><option value="fixed-speed">Fixed Speed</option><option value="other">???? ?</option></select></label>
                   <label><span>BTU</span><input type="number" min="0" value={selectedAppliance.btu ?? 0} onChange={(e) => updateAppliance(selectedAppliance.id, "btu", Math.max(0, Number(e.target.value)))} /></label>
                 </>
               )}
 
-              <label><span>วันที่ซื้อ</span><input type="date" value={selectedAppliance.purchaseDate} onChange={(e) => updateAppliance(selectedAppliance.id, "purchaseDate", e.target.value)} /></label>
-              <label><span>วันที่ติดตั้ง</span><input type="date" value={selectedAppliance.installationDate} onChange={(e) => updateAppliance(selectedAppliance.id, "installationDate", e.target.value)} /></label>
-              <label><span>วันหมดประกัน</span><input type="date" value={selectedAppliance.warrantyExpiryDate} onChange={(e) => updateAppliance(selectedAppliance.id, "warrantyExpiryDate", e.target.value)} /></label>
-              <label><span>ตรวจสอบครั้งถัดไป</span><input type="date" value={selectedAppliance.nextInspectionDate} onChange={(e) => updateAppliance(selectedAppliance.id, "nextInspectionDate", e.target.value)} /></label>
-              <label><span>บำรุงรักษาครั้งถัดไป</span><input type="date" value={selectedAppliance.nextServiceDate} onChange={(e) => updateAppliance(selectedAppliance.id, "nextServiceDate", e.target.value)} /></label>
-              <label className="modal-full"><span>หมายเหตุ</span><textarea rows={3} value={selectedAppliance.notes} onChange={(e) => updateAppliance(selectedAppliance.id, "notes", e.target.value)} /></label>
+              <label><span>??????????</span><input type="date" value={selectedAppliance.purchaseDate} onChange={(e) => updateAppliance(selectedAppliance.id, "purchaseDate", e.target.value)} /></label>
+              <label><span>?????????????</span><input type="date" value={selectedAppliance.installationDate} onChange={(e) => updateAppliance(selectedAppliance.id, "installationDate", e.target.value)} /></label>
+              <label><span>????????????</span><input type="date" value={selectedAppliance.warrantyExpiryDate} onChange={(e) => updateAppliance(selectedAppliance.id, "warrantyExpiryDate", e.target.value)} /></label>
+              <label><span>?????????????????</span><input type="date" value={selectedAppliance.nextInspectionDate} onChange={(e) => updateAppliance(selectedAppliance.id, "nextInspectionDate", e.target.value)} /></label>
+              <label><span>????????????????????</span><input type="date" value={selectedAppliance.nextServiceDate} onChange={(e) => updateAppliance(selectedAppliance.id, "nextServiceDate", e.target.value)} /></label>
+              <label className="modal-full"><span>????????</span><textarea rows={3} value={selectedAppliance.notes} onChange={(e) => updateAppliance(selectedAppliance.id, "notes", e.target.value)} /></label>
             </div>
 
             <div className="status-row">
-              <span className={`status-chip ${getWarrantyStatus(selectedAppliance.warrantyExpiryDate).tone}`}>ประกัน: {getWarrantyStatus(selectedAppliance.warrantyExpiryDate).label}</span>
-              <span className={`status-chip ${getMaintenanceStatus(selectedAppliance.nextServiceDate).tone}`}>บำรุงรักษา: {getMaintenanceStatus(selectedAppliance.nextServiceDate).label}</span>
+              <span className={`status-chip ${getWarrantyStatus(selectedAppliance.warrantyExpiryDate).tone}`}>??????: {getWarrantyStatus(selectedAppliance.warrantyExpiryDate).label}</span>
+              <span className={`status-chip ${getMaintenanceStatus(selectedAppliance.nextServiceDate).tone}`}>??????????: {getMaintenanceStatus(selectedAppliance.nextServiceDate).label}</span>
             </div>
 
             <div className="modal-footer">
-              <button className="reset-button" onClick={() => setSelectedApplianceId(null)}>ปิดหน้าต่าง</button>
-              <button className="add-button" onClick={() => setSelectedApplianceId(null)}>บันทึกข้อมูล</button>
+              <button className="reset-button" onClick={() => setSelectedApplianceId(null)}>???????????</button>
+              <button className="add-button" onClick={() => setSelectedApplianceId(null)}>????????????</button>
             </div>
           </div>
         </div>
@@ -604,3 +641,4 @@ function App() {
 }
 
 export default App;
+
