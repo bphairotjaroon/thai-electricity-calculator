@@ -1,4 +1,4 @@
-
+﻿
 * {
   box-sizing: border-box;
 }
@@ -822,15 +822,14 @@ footer {
     grid-column: 1 / -1;
   }
 }
-
 @media (max-width: 760px) {
   .content {
-    width: min(100% - 28px, 650px);
-    padding-top: 24px;
+    width: min(100% - 20px, 650px);
+    padding-top: 20px;
   }
 
   .topbar {
-    padding: 13px 14px;
+    padding: 12px 14px;
   }
 
   .page-heading {
@@ -849,37 +848,107 @@ footer {
     grid-column: auto;
   }
 
+  /* =========================
+     MOBILE APPLIANCE LIST
+  ========================= */
+
   .table-head {
     display: none;
   }
 
   .appliance-list {
-    padding: 8px 12px;
+    padding: 8px 10px 12px;
   }
 
   .appliance-row {
+    position: relative;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    padding: 15px 8px;
-    border: 1px solid #edf0f4;
-    border-radius: 10px;
-    margin: 8px 0;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 14px;
+    margin: 10px 0;
+    border: 1px solid #e5e9f0;
+    border-radius: 12px;
+    background: #ffffff;
   }
 
   .appliance-name {
     grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding-bottom: 4px;
   }
 
-  .kwh-value {
-    padding: 9px 0;
+  .mobile-field {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .mobile-field > span {
+    display: block;
+    color: #7b8596;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .mobile-field input {
+    width: 100%;
+    min-width: 0;
+    padding: 9px 8px;
+    border: 1px solid #e4e8ef;
+    border-radius: 8px;
+    background: #fbfcfd;
+    color: #313b4d;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .mobile-field input:focus {
+    border-color: #9db9f7;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+  }
+
+  .mobile-kwh-field {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 54px;
+    padding: 8px 10px;
+    border-radius: 8px;
     background: #f3f7ff;
-    border-radius: 7px;
+  }
+
+  .mobile-kwh-field .kwh-value {
+    padding: 0;
+    color: #2563eb;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .row-actions {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 4px;
+    min-height: 54px;
+  }
+
+  .detail-button,
+  .delete-button {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
   }
 
   .delete-button {
-    position: absolute;
-    margin-left: calc(100% - 42px);
+    position: static;
+    margin-left: 0;
   }
 
   .cost-grid {
@@ -1118,7 +1187,240 @@ button svg {
   .modal-footer { padding: 14px 17px 17px; }
 }
 
-.table-head,
-.appliance-row {
-  grid-template-columns: minmax(170px, 1.6fr) 90px 75px 85px 65px 90px 66px;
+
+
+/* =========================
+   POLISH: BILL + TARIFF TABLE
+========================= */
+
+.bill-panel {
+  overflow: hidden;
 }
+
+.bill-content {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.85fr) minmax(360px, 1.15fr);
+  gap: 18px;
+  padding: 22px;
+}
+
+.bill-input-card,
+.bill-result-card {
+  min-width: 0;
+  border: 1px solid #e5e9f0;
+  border-radius: 14px;
+  background: #fbfcfe;
+  padding: 20px;
+}
+
+.bill-input-card {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.bill-input-card > span,
+.bill-result-card > span {
+  color: #697386;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.bill-input-card input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #dce3ed;
+  border-radius: 10px;
+  outline: none;
+  background: #ffffff;
+  color: #172033;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.bill-input-card small {
+  color: #8b94a4;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.bill-result-card > strong {
+  display: block;
+  margin-top: 5px;
+  color: #172033;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.bill-breakdown {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.bill-breakdown > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 9px;
+  background: #ffffff;
+  border: 1px solid #edf0f4;
+}
+
+.bill-breakdown span {
+  color: #7b8596;
+  font-size: 11px;
+}
+
+.bill-breakdown b {
+  color: #303a4c;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.bill-badge {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #2563eb;
+  background: #eff5ff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.bill-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 0 22px 22px;
+  padding: 13px 14px;
+  border-radius: 10px;
+  color: #667286;
+  background: #f6f8fb;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.bill-note svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+/* Rate information cards */
+.rate-info-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-height: 82px;
+  padding: 14px 15px;
+  border: 1px solid #e1e7ef;
+  border-radius: 11px;
+  background: #fbfcfe;
+}
+
+.rate-info-card span {
+  color: #7b8596;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.rate-info-card strong {
+  color: #243047;
+  font-size: 15px;
+}
+
+.rate-info-card small,
+.rates-grid label small {
+  color: #929aaa;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+/* Tariff table */
+.tariff-table {
+  margin: 0 24px 22px;
+  overflow: hidden;
+  border: 1px solid #e1e6ee;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.tariff-table h4 {
+  margin: 0;
+  padding: 15px 16px;
+  border-bottom: 1px solid #e9edf2;
+  color: #273247;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.tariff-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.35fr) 1fr 1fr;
+  align-items: center;
+  min-height: 45px;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.tariff-row:last-child {
+  border-bottom: 0;
+}
+
+.tariff-row > span {
+  min-width: 0;
+  padding: 11px 14px;
+  color: #526075;
+  font-size: 12px;
+}
+
+.tariff-row > span:not(:first-child) {
+  text-align: right;
+  color: #263144;
+  font-variant-numeric: tabular-nums;
+}
+
+.tariff-row.tariff-head {
+  background: #f6f8fb;
+}
+
+.tariff-row.tariff-head > span {
+  color: #657084;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.tariff-row.tariff-head > span:not(:first-child) {
+  color: #526075;
+}
+
+@media (max-width: 900px) {
+  .bill-content {
+    grid-template-columns: 1fr;
+  }
+
+  .rates-panel {
+    max-width: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .bill-breakdown {
+    grid-template-columns: 1fr;
+  }
+
+  .tariff-table {
+    margin-left: 16px;
+    margin-right: 16px;
+    overflow-x: auto;
+  }
+
+  .tariff-row {
+    min-width: 520px;
+  }
+}
+
+

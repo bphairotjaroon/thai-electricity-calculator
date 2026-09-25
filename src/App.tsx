@@ -472,24 +472,114 @@ function App() {
                 </div>
 
                 <div className="appliance-list">
-                  {calculations.rows.map((item) => (
-                    <div className="appliance-row" key={item.id}>
-                      <div className="appliance-name">
-                        <div className="appliance-icon">{item.icon}</div>
-                        <input value={item.name} onChange={(e) => updateAppliance(item.id, "name", e.target.value)} />
-                      </div>
-                      <input type="number" min="0" value={item.watts} onChange={(e) => updateAppliance(item.id, "watts", Math.max(0, Number(e.target.value)))} />
-                      <input type="number" min="0" max="24" step="0.5" value={item.hoursPerDay} onChange={(e) => updateAppliance(item.id, "hoursPerDay", Math.max(0, Math.min(24, Number(e.target.value))))} />
-                      <input type="number" min="0" max="31" value={item.daysPerMonth} onChange={(e) => updateAppliance(item.id, "daysPerMonth", Math.max(0, Math.min(31, Number(e.target.value))))} />
-                      <input type="number" min="1" value={item.quantity} onChange={(e) => updateAppliance(item.id, "quantity", Math.max(1, Number(e.target.value)))} />
-                      <strong className="kwh-value">{item.kwh.toFixed(1)}</strong>
-                      <div className="row-actions">
-                        <button className="detail-button" onClick={() => setSelectedApplianceId(item.id)} title="รายละเอียด"><Info size={16} /></button>
-                        <button className="delete-button" onClick={() => removeAppliance(item.id)} title="ลบรายการ"><Trash2 size={17} /></button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+  {calculations.rows.map((item) => (
+    <div className="appliance-row" key={item.id}>
+
+      <div className="appliance-name">
+        <div className="appliance-icon">{item.icon}</div>
+        <input
+          value={item.name}
+          onChange={(e) =>
+            updateAppliance(item.id, "name", e.target.value)
+          }
+        />
+      </div>
+
+      <div className="mobile-field">
+        <span>กำลังไฟ (W)</span>
+        <input
+          type="number"
+          min="0"
+          value={item.watts}
+          onChange={(e) =>
+            updateAppliance(
+              item.id,
+              "watts",
+              Math.max(0, Number(e.target.value))
+            )
+          }
+        />
+      </div>
+
+      <div className="mobile-field">
+        <span>ชม./วัน</span>
+        <input
+          type="number"
+          min="0"
+          max="24"
+          step="0.5"
+          value={item.hoursPerDay}
+          onChange={(e) =>
+            updateAppliance(
+              item.id,
+              "hoursPerDay",
+              Math.max(0, Math.min(24, Number(e.target.value)))
+            )
+          }
+        />
+      </div>
+
+      <div className="mobile-field">
+        <span>วัน/เดือน</span>
+        <input
+          type="number"
+          min="0"
+          max="31"
+          value={item.daysPerMonth}
+          onChange={(e) =>
+            updateAppliance(
+              item.id,
+              "daysPerMonth",
+              Math.max(0, Math.min(31, Number(e.target.value)))
+            )
+          }
+        />
+      </div>
+
+      <div className="mobile-field">
+        <span>จำนวน</span>
+        <input
+          type="number"
+          min="1"
+          value={item.quantity}
+          onChange={(e) =>
+            updateAppliance(
+              item.id,
+              "quantity",
+              Math.max(1, Number(e.target.value))
+            )
+          }
+        />
+      </div>
+
+      <div className="mobile-kwh-field">
+        <span>kWh/เดือน</span>
+        <strong className="kwh-value">
+          {item.kwh.toFixed(1)}
+        </strong>
+      </div>
+
+      <div className="row-actions">
+        <button
+          className="detail-button"
+          onClick={() => setSelectedApplianceId(item.id)}
+          title="รายละเอียด"
+        >
+          <Info size={16} />
+        </button>
+
+        <button
+          className="delete-button"
+          onClick={() => removeAppliance(item.id)}
+          title="ลบรายการ"
+        >
+          <Trash2 size={17} />
+        </button>
+      </div>
+
+    </div>
+  ))}
+</div>
               </div>
 
               <div className="panel chart-panel">
@@ -650,4 +740,5 @@ function App() {
 }
 
 export default App;
+
 
